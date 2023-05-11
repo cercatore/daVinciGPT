@@ -10,7 +10,8 @@ const filter = new Filter();
 
 // Load environment variables from .env file
 try {
-  dotenv.config();
+  require('dotenv').config();
+  
 } catch (error) {
   console.error('Error loading environment variables:', error);
   process.exit(1);
@@ -18,7 +19,7 @@ try {
 
 // Create OpenAI configuration
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: process.env.OPENAI_API_KEY,
 });
 // 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
 
@@ -44,7 +45,7 @@ app.use(cors());
  * GET /
  * Returns a simple message.
  */
-app.get('/', (req, res) => {
+app.get('/', function(req, res) {
   res.status(200).send({
     message: 'Hello World!',
   });
@@ -54,7 +55,7 @@ app.get('/', (req, res) => {
  * POST /davinci
  * Returns a response from OpenAI's text completion model.
  */
-app.post('/davinci', async (req, res) => {
+app.post('/davinci', async function(req, res) {
   // Validate request body
   if (!req.body.prompt) {
     return res.status(400).send({
@@ -100,7 +101,7 @@ app.post('/davinci', async (req, res) => {
   }
 })
 
-app.post('/davinci', async (req, res) => {
+app.post('/davinci2old', async function(req, res) {
   // Validate request body
   if (!req.body.prompt ) {
     return res.status(400).send({
@@ -131,7 +132,7 @@ A: `,
       presence_penalty: 0.2,
       
     
-    }, 22222);
+    });
 
     console.log(response.data.choices[0].text)
     // Return response from OpenAI API
@@ -158,7 +159,7 @@ A: `,
  * POST /dalle
  * Returns a response from OpenAI's image generation model.
  */
-app.post('/dalleOPEN', async (req, res) => {
+app.post('/dalle2', async function(req, res)  {
   const prompt = req.body.prompt;
 
   try {
@@ -166,8 +167,7 @@ app.post('/dalleOPEN', async (req, res) => {
       prompt: `${prompt}`,
       n: 1,
       size: "256x256",
-      max_tokens: 2200,
-      temperature:0
+      response_format:"url"
     });
     
     console.log(response.data.data[0].url)
@@ -186,7 +186,7 @@ app.post('/dalleOPEN', async (req, res) => {
 
 const generateImage = require('./api/dalle');
 
-app.post('/dalle', async (req,res) => {
+app.post('/dalle', async function(req,res) {
   const prompt = req.body.prompt
   
   let image = generateImage(prompt)
@@ -198,5 +198,12 @@ app.post('/dalle', async (req,res) => {
 })
 
 // Start server
-const port = process.env.PORT || 3001;
-app.listen(port, () => console.log(`Server listening on port ${port}`));
+const PORT = process.env.PORT || 3001;
+// app.listen(port, ()  console.log(`Server listening on port ${port}`));
+app.listen(PORT, function(err) {
+  if (err) {
+    console.error(err)
+  } else {
+    console.log(`Running on port ${PORT}`)
+  }
+})
