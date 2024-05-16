@@ -91,6 +91,7 @@ app.post('/davinci', async function(req, res) {
     console.log("checking model" + model );
     let retvalue = checkIncludes( model);
 
+    
     if (! retValue){
       res.status(404).send({success:false,message:`error: the model ${model} is not available.`})
       return;
