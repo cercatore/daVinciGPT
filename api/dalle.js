@@ -3,7 +3,7 @@ const axios = require('axios');
 const QUERY_URL = "https://api.openai.com/v1/images/generations";
 
 // Your API key here
-const API_KEY = aaaa;
+const API_KEY = undefined;
 
 const model = "image-alpha-001";
 const prompt = "a cat sitting on a couch";
@@ -15,6 +15,7 @@ const data = {
     size: "512x512",
     temperature:0
 };
+// warning this wont work: missine BEARER
 const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${API_KEY}`
