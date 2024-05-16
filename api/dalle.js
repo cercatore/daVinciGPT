@@ -3,7 +3,7 @@ const axios = require('axios');
 const QUERY_URL = "https://api.openai.com/v1/images/generations";
 
 // Your API key here
-// const API_KEY = ;
+const API_KEY = aaaa;
 
 const model = "image-alpha-001";
 const prompt = "a cat sitting on a couch";
