@@ -1,0 +1,40 @@
+import requests
+
+def google_search(query, api_key, cse_id):
+    # URL for Google Custom Search JSON API
+    url = "https://www.googleapis.com/customsearch/v1"
+    
+    # Parameters for the API request
+    params = {
+        "q": query,        # Search query
+        "key": api_key,    # Your API key
+        "cx": cse_id,      # Your Custom Search Engine ID
+    }
+    
+    # Send the request
+    response = requests.get(url, params=params)
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the JSON response
+        results = response.json()
+        
+        # Extract search results
+        search_items = results.get("items", [])   <<<<<< items
+        
+        # Print the titles and links of 1the search results
+        for item in search_items:
+            title = item.get("title")
+            link = item.get("link")
+            print(f"Title: {title}\nLink: {link}\n")
+    else:
+        # Print the error message
+        print(f"Error: {response.status_code}")
+        print(response.json())
+
+# Replace with your API key and CSE ID
+api_key = "YOUR_API_KEY"
+cse_id = "YOUR_CSE_ID"
+
+# Perform a search
+google_search("laptops", api_key, cse_id)

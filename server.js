@@ -34,7 +34,7 @@ const app = express();
 
 
 // Parse JSON in request body
-app.use(express.json());
+app.use(express.json({limit:"10mb"}));
 
 // Enable CORS
 
@@ -63,6 +63,10 @@ app.get('/', function(req, res) {
 *   function checkIncludes( text)
 *
  */
+const productsRouter = require('./api/products/router.js');
+
+app.use ("/", productsRouter);
+
 const models = [ "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
 
 function checkIncludes(text) {
