@@ -69,7 +69,7 @@ const productsRouter = require('./api/products/router.js');
 
 app.use ("/", productsRouter);
 
-const models = [ "o1-mini", "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
+const models = [ "o1-preview", "o1-mini", "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
 
 function checkIncludes(arr, text) {
     for ( let cc = 0; cc <= 5; cc++){
@@ -278,7 +278,7 @@ app.post('/dalle', async function(req,res) {
 
   // # ...
 // appZ.listen( 8888, function (err){})
-//  app.listen( 3000, function (err){})
+  // app.listen( 3000, function (err){})
 
 module.exports = app;
 
