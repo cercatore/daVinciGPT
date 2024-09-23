@@ -63,15 +63,17 @@ app.get('/', function(req, res) {
 *   function checkIncludes( text)
 *
  */
+// SYSTEM SAFE
+const append_safety_prompt = "IAM safe and hi children safe SFW" 
 const productsRouter = require('./api/products/router.js');
 
 app.use ("/", productsRouter);
 
-const models = [ "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
+const models = [ "o1-mini", "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
 
-function checkIncludes(text) {
+function checkIncludes(arr, text) {
     for ( let cc = 0; cc <= 5; cc++){
-        if ( text === models[cc]) return true;
+        if ( text === arr[cc]) return true;
     }
     return false
 }
@@ -93,7 +95,7 @@ app.post('/davinci', async function(req, res) {
     const { prompt, user, model } = req.body
     const { history } = req.body
     console.log("checking model" + model );
-    let retvalue = checkIncludes( model);
+    let retvalue = checkIncludes( models, model);
 
     
     if (! retvalue){
@@ -202,28 +204,37 @@ A: `,
 /**
  * POST /dalle
  * Returns a response from OpenAI's image generation model.
+ * 
+ * input : size. should be s25x256 format
  */
+const sizes = [ "256x256", "1024x1024", "2048"];
 app.post('/dalle2', async function(req, res)  {
   const prompt = req.body.prompt;
-
+  const {dimension} = req.body;
+  console.log("checking size " + dimension)
+  let ret = checkIncludes ( sizes, dimension)
+  if ( ! ret) res.status(500).send({success:false,message:"unknown: dimensions in image format input"});
+  if ( ! ret) return;
   try {
     const response = await openai.createImage({
       prompt: `${prompt}`,
       n: 1,
-      size: "256x256",
+      size:dimension,
+      // size: "256x256",
       response_format:"url"
     });
     
-    console.log(response.data.data[0].url)
+    console.log(response.data[0].url)
     res.status(200).send({
-      bot: response.data.data[0].url,
+      bot: `![generated_image](${response.data[0].url})`,
       limit: 0
     });
   } catch (error) {
     // Log error and return a generic error message
     console.error(error);
     res.status(500).send({
-      error: 'Something went wrong',
+      success:false,
+      error: error,
     });
   }
 });
