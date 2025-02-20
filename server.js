@@ -11,10 +11,10 @@ const filter = new Filter();
 // Load environment variables from .env file
 try {
   require('dotenv').config();
-  console.log(process.env.OPENAI_API_KEY)
+  console.log(process.env.OPENAI_APIKEY)
   
 } catch (error) {
-  console.log(process.env.OPENAI_API_KEY)
+  console.log(process.env.OPENAI_APIKEY)
   console.error('Error loading environment variables:', error);
   process.exit(1);
 }
@@ -89,7 +89,7 @@ app.post('/davinci', async function(req, res) {
       error: 'Missing required field "prompt" in request body',
     })
   }
-  
+  let response;
   try {
     // Call OpenAI API
     const { prompt, user, model } = req.body
@@ -118,8 +118,8 @@ app.post('/davinci', async function(req, res) {
     
     let promptItem = {"role": "user", "content": `${cleanPrompt}?`};
     out.push(promptItem)
-    const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+    response = await openai.createChatCompletion({
+      model,
       messages: out,
       user: "user",  // ? ?? ?
       temperature: 0.5,
@@ -129,8 +129,7 @@ app.post('/davinci', async function(req, res) {
       presence_penalty: 0.2,
     })
 
-    console.log(response.data.choices[0].message.content)
-  console.log(response.data.choices[0].context)
+    //console.log(response.data.choices[0].message.content)
     console.log(user)
     // Return response from OpenAI API
     res.status(200).send({
@@ -141,11 +140,16 @@ app.post('/davinci', async function(req, res) {
   } catch (error) {
     // Log error and return a generic error message
     console.error(error)
+    console.log(error.message)
     res.status(500).send({
       error: 'Something went wrong',
     })
   }
 })
+/**
+ * POST /davinci PLUS file
+ * Returns a response from OpenAI's text completion model.
+ */
 
 app.post('/davinci2old', async function(req, res) {
   // Validate request body
@@ -278,7 +282,7 @@ app.post('/dalle', async function(req,res) {
 
   // # ...
 // appZ.listen( 8888, function (err){})
-  // app.listen( 3000, function (err){})
+  app.listen( 3000, function (err){})
 
 module.exports = app;
 

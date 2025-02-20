@@ -1,9 +1,10 @@
 import { OpenAi} from 'openai'
+import dotenv from 'dotenv'
+dotenv.config();
 
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-const openai = new OpenAi({api_key:OPENAI_API_KEY});
+const openai = new OpenAi(
+    {apikey:process.env.OPENAI_APIKEY});
 
 async function simulate_genai( prompt){
     /*

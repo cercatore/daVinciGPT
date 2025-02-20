@@ -3,7 +3,7 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 const prompt = 'Hello, ChatGPT!';
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_APIKEY;
 const data = {
   prompt: "some word that not change the current context",
   max_tokens: 50,
