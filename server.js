@@ -90,6 +90,11 @@ app.post('/davinci', async function(req, res) {
     })
   }
   let response;
+  // try to fix connection hung up
+    res.setHeader("Connection", "keep-alive")
+    setTimeout( _ => {
+      res.json({ message: "close affrettato."})
+    }, 120000)
   try {
     // Call OpenAI API
     const { prompt, user, model } = req.body
@@ -282,7 +287,7 @@ app.post('/dalle', async function(req,res) {
 
   // # ...
 // appZ.listen( 8888, function (err){})
-  app.listen( 3000, function (err){})
+  // app.listen( 3000, function (err){})
 
 module.exports = app;
 
