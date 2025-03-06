@@ -4,9 +4,8 @@
     { "src": "/(.*)", "dest": "/server.js" }
   ],
   "functions": {
-    "*.js": {
-      "runtime": "nodejs22.X"
-      
+    "server.js": {
+      "maxDuration": 60
     }
   }
 }
