@@ -119,14 +119,14 @@ app.post('/davinci', async function(req, res) {
       item = history.pop();
     
       console.log("history" + item)
-      out.push({"role":"user", "content":item})
+      out.push({role:"user", content:item})
     }
     
-    let promptItem = {"role": "user", "content": `${cleanPrompt}?`};
+    let promptItem = {role: "user", content: `${cleanPrompt}?`};
     if (file_id && ~file_id.indexOf('file')) {
-      promptItem = {"role":"user", "content":[
-          {"type": "text", "text":prompt},
-          {"type": "file", "file_id":file_id}
+      promptItem = {role:"user", content:[
+          {type: "text", text:prompt},
+          {type: "file", file_id}
           ]
       }}
     
@@ -134,7 +134,7 @@ app.post('/davinci', async function(req, res) {
     console.log(promptItem)
     response = await openai.createChatCompletion({
       model,
-      messages: out,
+      messages: JSON.stringify( out),
       user: "user",  // ? ?? ?
       temperature: 0.5,
       max_tokens: 2047,
@@ -296,7 +296,7 @@ app.post('/dalle', async function(req,res) {
 
   // # ...
 // appZ.listen( 8888, function (err){})
-  // app.listen( 3000, function (err){})
+  // app.listen( 3000, function (err){console.log('server listen to 3000')})
 
 module.exports = app;
 
