@@ -97,17 +97,17 @@ app.post('/davinci', async function(req, res) {
     }, 120000)
   try {
     // Call OpenAI API
-    const { prompt, user, model } = req.body
+    const { prompt, user, model, magic, file_id} = req.body
     const { history } = req.body
+    let skip = (magic ) ? magic === 'banana' : null;
     console.log("checking model" + model );
-    let retvalue = checkIncludes( models, model);
-
-    
-    if (! retvalue){
-      res.status(404).send({success:false,message:`error: the model ${model} is not available.`})
-      return;
+    if (!skip ){
+      if (! checkIncludes( models, model)){
+        res.status(404).send({success:false,message:`error: the model ${model} is not available.`})
+        return;
+      }
+        
     }
-
     const cleanPrompt = filter.isProfane(prompt) ? filter.clean(prompt) : prompt
     console.log(cleanPrompt)
     let out = [];
@@ -117,11 +117,18 @@ app.post('/davinci', async function(req, res) {
     for (let ii = 0; ii < history.length;ii++){
       item = history.pop();
     
-      console.log(item)
+      console.log("history" + item)
       out.push({"role":"user", "content":item})
     }
     
     let promptItem = {"role": "user", "content": `${cleanPrompt}?`};
+    if (file_id && ~file_id.indexOf('file')) {
+      promptItem = {"role":"user", "content":[
+          {"type": "text", "text":prompt},
+          {"type": "file", "file_id":file_id}
+          ]
+      }}
+    
     out.push(promptItem)
     response = await openai.createChatCompletion({
       model,
