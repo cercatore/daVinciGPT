@@ -92,7 +92,7 @@ app.post('/davinci', async function(req, res) {
   let response;
   // try to fix connection hung up
     res.setHeader("Connection", "keep-alive")
-    res.flushHeaders();
+    // res.flushHeaders();
     // setTimeout( _ => {
     //   res.json({ message: "close affrettato."})
     // }, 120000)
@@ -104,7 +104,7 @@ app.post('/davinci', async function(req, res) {
     console.log("checking model" + model );
     if (!skip ){
       if (! checkIncludes( models, model)){
-        res.status(404).send({success:false,message:`error: the model ${model} is not available.`})
+        res.send({success:false,message:`error: the model ${model} is not available.`})
         return;
       }
         
@@ -156,7 +156,7 @@ app.post('/davinci', async function(req, res) {
     console.error(error)
     console.log(error.message)
     res.status(500).send({
-      error: 'Something went wrong',
+      error:error,
     })
   }
 })
