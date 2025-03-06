@@ -69,7 +69,7 @@ const productsRouter = require('./api/products/router.js');
 
 app.use ("/", productsRouter);
 
-const models = [ "o1-preview", "o1-mini", "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
+const models = [ "o1-preview", "o1-mini","gpt-4", "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
 
 function checkIncludes(arr, text) {
     for ( let cc = 0; cc <= 5; cc++){
@@ -119,10 +119,10 @@ app.post('/davinci', async function(req, res) {
       item = history.pop();
     
       console.log("history" + item)
-      out.push({role:"user", content:item})
+      out.push({"role":"user", "content":item})
     }
     
-    let promptItem = {role: "user", content: `${cleanPrompt}?`};
+    let promptItem = {"role": "user", "content": `${cleanPrompt}?`};
     if (file_id && ~file_id.indexOf('file')) {
       promptItem = {role:"user", content:[
           {type: "text", text:prompt},
@@ -134,7 +134,7 @@ app.post('/davinci', async function(req, res) {
     console.log(promptItem)
     response = await openai.createChatCompletion({
       model,
-      messages: JSON.stringify( out),
+      messages: out,
       user: "user",  // ? ?? ?
       temperature: 0.5,
       max_tokens: 2047,
