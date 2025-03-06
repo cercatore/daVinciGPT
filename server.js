@@ -131,6 +131,7 @@ app.post('/davinci', async function(req, res) {
       }}
     
     out.push(promptItem)
+    console.log(promptItem)
     response = await openai.createChatCompletion({
       model,
       messages: out,
