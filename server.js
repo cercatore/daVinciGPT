@@ -69,7 +69,7 @@ const productsRouter = require('./api/products/router.js');
 
 app.use ("/", productsRouter);
 
-const models = [ "o1-preview", "o1-mini","gpt-4", "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
+const models = [ "o1-preview", "o1-mini","o3-mini","gpt-4", "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
 
 function checkIncludes(arr, text) {
     for ( let cc = 0; cc <= 5; cc++){
@@ -98,7 +98,7 @@ app.post('/davinci', async function(req, res) {
     // }, 120000)
   try {
     // Call OpenAI API
-    const { prompt, user, model, magic, file_id} = req.body
+    const { prompt, user, model, magic, file_id, system} = req.body
     const { history } = req.body
     let skip = (magic ) ? magic === 'banana' : null;
     console.log("checking model" + model );
@@ -112,7 +112,10 @@ app.post('/davinci', async function(req, res) {
     const cleanPrompt = filter.isProfane(prompt) ? filter.clean(prompt) : prompt
     console.log(cleanPrompt)
     let out = [];
-    out.push({"role": "system", "content": "you're an a AI assistant that replies to all my questions in markdown format."})
+    if (!system || system === "")
+      out.push({"role": "system", "content": "you're an a AI assistant that replies to all my questions in markdown format."})
+    else 
+      out.push({"role": "system", "content": system})
     let item = history.pop();
     console.log(history.length)
     for (let ii = 0; ii < history.length;ii++){
