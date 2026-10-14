@@ -72,10 +72,11 @@ app.use ("/", productsRouter);
 const models = [ "o1-preview", "o1-mini","o3-mini","gpt-4", "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4-vision-preview", "gpt-3.5-turbo"];
 
 function checkIncludes(arr, text) {
-    for ( let cc = 0; cc <= 5; cc++){
-        if ( text === arr[cc]) return true;
-    }
-    return false
+	// Generic includes helper over full array length
+	for (let cc = 0; cc < arr.length; cc++) {
+		if (text === arr[cc]) return true;
+	}
+	return false
 }
 
 /**
@@ -97,9 +98,8 @@ app.post('/davinci', async function(req, res) {
     //   res.json({ message: "close affrettato."})
     // }, 120000)
   try {
-    // Call OpenAI API
-    const { prompt, user, model, magic, file_id, system} = req.body
-    const { history } = req.body
+	// Call OpenAI API
+	const { prompt, user, model, magic, file_id, system, history = [] } = req.body
     let skip = (magic ) ? magic === 'banana' : null;
     console.log("checking model" + model );
     if (!skip ){
@@ -109,21 +109,22 @@ app.post('/davinci', async function(req, res) {
       }
         
     }
-    const cleanPrompt = filter.isProfane(prompt) ? filter.clean(prompt) : prompt
-    console.log(cleanPrompt)
-    let out = [];
-    if (!system || system === "")
-      out.push({"role": "system", "content": "you're an a AI assistant that replies to all my questions in markdown format."})
-    else 
-      out.push({"role": "system", "content": system})
-    let item = history.pop();
-    console.log(history.length)
-    for (let ii = 0; ii < history.length;ii++){
-      item = history.pop();
-    
-      console.log("history" + item)
-      out.push({"role":"user", "content":item})
-    }
+	const cleanPrompt = filter.isProfane(prompt) ? filter.clean(prompt) : prompt
+	console.log(cleanPrompt)
+	let out = [];
+	if (!system || system === "")
+	  out.push({"role": "system", "content": "you're an a AI assistant that replies to all my questions in markdown format."})
+	else 
+	  out.push({"role": "system", "content": system})
+
+	// Optional conversation history: array of previous user messages
+	if (Array.isArray(history) && history.length > 0) {
+	  console.log("history length", history.length)
+	  for (const item of history) {
+		console.log("history", item)
+		out.push({ role: "user", content: item })
+	  }
+	}
     
     let promptItem = {"role": "user", "content": `${cleanPrompt}?`};
     if (file_id && ~file_id.indexOf('file')) {
